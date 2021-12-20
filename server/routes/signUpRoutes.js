@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const mysql = require("mysql2");
 const session = require("express-session");
@@ -59,14 +60,34 @@ router
     });
   });
 
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    res.send("Web token not found; please insert a token");
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.json({ auth: false, message: "Authentication failed" });
+      } else {
+        req.userId = decoded.id;
+        next();
+      }
+    });
+  }
+  next();
+};
+
+router.route("/isUserAuth").get(verifyJWT, (req, res) => {
+  res.send("You are authenticated");
+});
+
 router
   .route("/login")
   .get((req, res) => {
-    if(req.session.user){
-      res.send({loggedIn:true,user:req.session.user})
-    }
-    else{
-      res.send({loggedIn:false})
+    if (req.session.user) {
+      res.send({ loggedIn: true, user: req.session.user });
+    } else {
+      res.send({ loggedIn: false });
     }
   })
   .post((req, res) => {
@@ -83,15 +104,23 @@ router
         if (result.length > 0) {
           bcrypt.compare(password, result[0].password, (error, response) => {
             if (response) {
+              const id = result[0].user_id;
+              const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                expiresIn: 300,
+              });
+
               req.session.user = result;
-              console.log(req.session.user);
-              res.send(result);
+
+              res.json({ auth: true, token: token, result: result });
             } else {
-              res.send({ message: "Invalid username/password combination" });
+              res.json({
+                auth: false,
+                message: "Invalid username/password combination",
+              });
             }
           });
         } else {
-          res.send({ message: "No user exists" });
+          res.json({ auth: false, message: "No user exists" });
         }
       }
     );

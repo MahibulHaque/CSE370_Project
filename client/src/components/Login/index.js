@@ -11,6 +11,7 @@ import {
   ButtonHolder,
   ImageContainer,
 } from "./LoginElements";
+import { useLoggedIn } from "../../Contexts/UserContext";
 
 const useStyles = makeStyles({
   field: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 
 const Login = () => {
   const classes = useStyles();
+  const { userLoggedIn, setUserLoggedIn } = useLoggedIn();
 
   const [signupForm, setSignupForm] = useState(false);
 
@@ -44,10 +46,18 @@ const Login = () => {
         username: username,
         password: password,
       }).then((response) => {
-        console.log(response.data);
+        if (!response.data.auth) {
+          setUserLoggedIn(false);
+        } else {
+          console.log(response.data);
+          setUserLoggedIn(true);
+          localStorage.setItem("token", response.data.token);
+        }
       });
     }
   };
+
+
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     if (username && password && email) {
@@ -63,10 +73,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    Axios.get("http://localhost:5000/login").then((response)=>{
-      console.log(response)
-    })
-  }, [])
+    Axios.get("http://localhost:5000/login").then((response) => {
+      console.log(response);
+    });
+  }, []);
   return (
     <>
       <Container>

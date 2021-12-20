@@ -3,6 +3,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, green } from "@material-ui/core/colors";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
+import UserContextProvider from "./Contexts/UserContext";
 
 const theme = createTheme({
   palette: {
@@ -20,13 +21,15 @@ const theme = createTheme({
 
 function App() {
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <Routes>
-          <Route path="/" element={<Login />}></Route>
-        </Routes>
-      </ThemeProvider>
-    </Router>
+    <UserContextProvider>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <Routes>
+            <Route path="/" element={<Login />}></Route>
+          </Routes>
+        </ThemeProvider>
+      </Router>
+    </UserContextProvider>
   );
 }
 

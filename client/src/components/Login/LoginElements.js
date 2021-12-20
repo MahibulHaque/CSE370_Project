@@ -6,11 +6,9 @@ export const Container = styled.div`
   justify-content: center;
   max-width: 1600px;
   width: 80%;
+  min-height:100vh;
   flex-wrap: wrap;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  margin:auto;
 `;
 export const MainContainer = styled.div`
   display: flex;
