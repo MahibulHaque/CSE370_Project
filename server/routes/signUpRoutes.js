@@ -43,7 +43,7 @@ router
         console.log(err);
       }
       db.query(
-        "INSERT INTO user (username,user_password,user_email,user_id) VALUES (?,?,?,?)",
+        "INSERT INTO user (username,password,user_email,user_id) VALUES (?,?,?,?)",
         [username, hash, user_email, user_id],
         (err, result) => {
           if (err) {
@@ -125,5 +125,26 @@ router
       }
     );
   });
+
+router.route("/searchUser").post((req, res) => {
+  const nameUser = req.body.searchQuery;
+
+  db.query(
+    "SELECT username,user_id FROM user WHERE username=?",
+    nameUser,
+    (err, result) => {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        if (result.length > 0) {
+          res.status(200).send(result);
+        }
+        else{
+          res.status(200).json({message:`No user/group found with the name ${nameUser}`});
+        }
+      }
+    }
+  );
+});
 
 module.exports = router;

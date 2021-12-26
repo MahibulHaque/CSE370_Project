@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, makeStyles, TextField } from "@material-ui/core";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import {
   Container,
@@ -14,6 +15,7 @@ import {
 import { useLoggedIn } from "../../Contexts/UserContext";
 
 const useStyles = makeStyles({
+  
   field: {
     marginTop: 20,
     marginBottom: 20,
@@ -25,15 +27,18 @@ const useStyles = makeStyles({
     fontSize: "1.4rem",
     fontWeight: 700,
     textTransform: "none",
+    borderRadius:"200px"
   },
 });
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const classes = useStyles();
-  const { userLoggedIn, setUserLoggedIn } = useLoggedIn();
-
+  
+  const { setUserLoggedIn,userValues } = useLoggedIn();
+  
   const [signupForm, setSignupForm] = useState(false);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -49,34 +54,36 @@ const Login = () => {
         if (!response.data.auth) {
           setUserLoggedIn(false);
         } else {
-          console.log(response.data);
           setUserLoggedIn(true);
+          userValues.current = response.data.result[0];
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userID", response.data.result[0].user_id);
+          localStorage.setItem("username", response.data.result[0].username);
+          localStorage.setItem("username", response.data.result[0].user_email);
+          navigate(`/home/${response.data.result[0].user_id}`);
         }
       });
     }
   };
 
-
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     if (username && password && email) {
-      console.log(username, email);
       Axios.post("http://localhost:5000/register", {
         username: username,
         email: email,
         password: password,
-      }).then((response) => {
-        console.log(response);
-      });
+      }).then((response) => {});
     }
   };
 
   useEffect(() => {
     Axios.get("http://localhost:5000/login").then((response) => {
-      console.log(response);
+      if(response.data.loggedIn){
+        navigate(`/home/${response.data.user.user_id}`)
+      }
     });
-  }, []);
+  }, [navigate]);
   return (
     <>
       <Container>

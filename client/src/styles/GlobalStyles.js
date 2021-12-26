@@ -21,6 +21,7 @@ const GlobalStyles = createGlobalStyle`
         --grey-1: #B0A8B9;
         --white: white; 
         --purple:#4D4DFF;
+        --message-1:#E4E6EB;
     }
     html{
         font-size: 10px;

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const app = express();
 const signUpRoutes = require("./routes/signUpRoutes");
+const directMessagesRoutes = require("./routes/directMessagesRoutes");
 
 require("dotenv").config();
 
@@ -23,6 +24,7 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(signUpRoutes);
+app.use(directMessagesRoutes);
 app.get("/", (req, res) => {
   res.send(`Hello`);
 });
