@@ -49,6 +49,7 @@ const Sidebar = () => {
           setSearchResults(response.data);
         }
       });
+      e.target.value= '';
     }
   };
 

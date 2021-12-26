@@ -11,9 +11,11 @@ import {
 } from "./ChatSectionElements";
 import backgroundImage from "./jt4AoG.webp";
 import { useParams } from "react-router-dom";
+import {FaLock} from 'react-icons/fa'
 
 const ChatSection = ({ showTextArea }) => {
   const [allMessages, setAllMessages] = useState(null);
+  const [starterMessage, setStarterMessage] = useState(null);
 
   const [messageBody, setMessageBody] = useState("");
 
@@ -21,7 +23,7 @@ const ChatSection = ({ showTextArea }) => {
     setMessageBody(e.target.value);
   };
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && messageBody !== "") {
+    if (e.keyCode === 13 && messageBody.length > 0 && !e.shiftKey) {
       Axios.post("http://localhost:5000/postMessages", {
         message: messageBody,
         incoming_id: localStorage.getItem("userID"),
@@ -29,7 +31,6 @@ const ChatSection = ({ showTextArea }) => {
       }).then((response) => {});
       e.target.value = "";
       setMessageBody("");
-    } else {
     }
   };
 
@@ -42,9 +43,12 @@ const ChatSection = ({ showTextArea }) => {
         outgoing_id: id,
       }).then((response) => {
         if (response.status === 201) {
+          setStarterMessage(null);
           if (response.data.length > 0) {
             setAllMessages(response.data);
           }
+        } else if (response.status === 200) {
+          setStarterMessage(response.data);
         }
       });
     }, 2000);
@@ -67,6 +71,9 @@ const ChatSection = ({ showTextArea }) => {
                 )}
               </InnerMessageContainer>
             ))}
+            {starterMessage!==null &&(
+              <div className="start_message"><span style={{marginRight:"5px"}}><FaLock style={{width:"12px",height:"auto",}}/></span>{starterMessage}! No message available.</div>
+            )}
           </MessageContainer>
           <InputSection>
             <FileUploadIcon></FileUploadIcon>

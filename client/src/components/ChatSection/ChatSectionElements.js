@@ -43,11 +43,20 @@ export const Inputbar = styled.textarea`
 export const MessageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   overflow-y: scroll;
-  min-height: 75%;
+  max-height: 80vh;
   width: 100%;
   margin-block: 10px;
+
+  & .start_message{
+    font-size:1.4rem;
+    background-color:lightgreen;
+    padding:10px;
+    border-radius:20px;
+    position:absolute;
+    bottom:20%;
+    left:50%;
+  }
 `;
 
 export const InnerMessageContainer = styled.div`
@@ -58,6 +67,8 @@ export const InnerMessageContainer = styled.div`
         padding:10px;
         border-radius:20px;
         margin-left:40px;
+        max-width:300px;
+        margin-bottom:20px;
     }
     & .user-message{
         float: right;
@@ -66,6 +77,8 @@ export const InnerMessageContainer = styled.div`
         border-radius:20px;
         margin-right:40px;
         color:var(--white);
+        max-width:300px;
+        margin-bottom:20px;
     }
 
 `;
