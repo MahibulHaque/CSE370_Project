@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, makeStyles, TextField } from "@material-ui/core";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, IconButton, makeStyles, TextField } from "@material-ui/core";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -13,9 +13,9 @@ import {
   ImageContainer,
 } from "./LoginElements";
 import { useLoggedIn } from "../../Contexts/UserContext";
+import { Image } from "@material-ui/icons";
 
 const useStyles = makeStyles({
-  
   field: {
     marginTop: 20,
     marginBottom: 20,
@@ -27,25 +27,35 @@ const useStyles = makeStyles({
     fontSize: "1.4rem",
     fontWeight: 700,
     textTransform: "none",
-    borderRadius:"200px"
+    borderRadius: "200px",
+  },
+  input: {
+    display: "none",
   },
 });
 
 const Login = () => {
+  const uploadInputRef = useRef(null);
   const navigate = useNavigate();
 
   const classes = useStyles();
-  
-  const { setUserLoggedIn,userValues } = useLoggedIn();
-  
+
+  const { setUserLoggedIn, userValues } = useLoggedIn();
+
   const [signupForm, setSignupForm] = useState(false);
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(null);
   const [email, setEmail] = useState("");
+  const formData = new FormData();
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    formData.append("image", file);
+  };
 
   Axios.defaults.withCredentials = true;
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+
     if (username && password) {
       Axios.post("http://localhost:5000/login", {
         username: username,
@@ -54,12 +64,17 @@ const Login = () => {
         if (!response.data.auth) {
           setUserLoggedIn(false);
         } else {
+          console.log(response.data);
           setUserLoggedIn(true);
           userValues.current = response.data.result[0];
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("userID", response.data.result[0].user_id);
           localStorage.setItem("username", response.data.result[0].username);
-          localStorage.setItem("username", response.data.result[0].user_email);
+          localStorage.setItem(
+            "user_email",
+            response.data.result[0].user_email
+          );
+          localStorage.setItem("userPic",`http://localhost:5000/${response.data.result[0].image}`)
           navigate(`/home/${response.data.result[0].user_id}`);
         }
       });
@@ -69,18 +84,23 @@ const Login = () => {
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     if (username && password && email) {
-      Axios.post("http://localhost:5000/register", {
-        username: username,
-        email: email,
-        password: password,
-      }).then((response) => {});
+      formData.append("username", username);
+      formData.append("user_email", email);
+      formData.append("password", password);
+      Axios.post("http://localhost:5000/register", formData,{
+        headers:{
+          'Content-type':'multipart/form-data'
+        }
+      }).then((response) => {
+        console.log(response);
+      });
     }
   };
 
   useEffect(() => {
     Axios.get("http://localhost:5000/login").then((response) => {
-      if(response.data.loggedIn){
-        navigate(`/home/${response.data.user.user_id}`)
+      if (response.data.loggedIn) {
+        navigate(`/home/${response.data.user.user_id}`);
       }
     });
   }, [navigate]);
@@ -116,6 +136,7 @@ const Login = () => {
                   setPassword(e.target.value);
                 }}
               />
+
               <ButtonHolder>
                 <Button
                   className={classes.button}
@@ -175,6 +196,27 @@ const Login = () => {
                   setPassword(e.target.value);
                 }}
               />
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                className={classes.input}
+                id="raised-button-field"
+                multiple={false}
+                ref={uploadInputRef}
+                onChange={handleFile}
+              />
+              <IconButton
+                onClick={() =>
+                  uploadInputRef.current && uploadInputRef.current.click()
+                }
+                variant="outlined"
+                component="span"
+                className={classes.button}
+              >
+                <Image color="primary" />
+                Upload Image
+              </IconButton>
               <ButtonHolder>
                 <Button
                   className={classes.button}

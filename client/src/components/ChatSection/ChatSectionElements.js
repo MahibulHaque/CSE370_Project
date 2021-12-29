@@ -20,11 +20,11 @@ export const InputSection = styled.div`
   align-items: center;
   justify-content: space-evenly;
   padding-block: 1rem;
+  background-color: var(--highlight);
 `;
 
-export const FileUploadIcon = styled.div``;
 export const Inputbar = styled.textarea`
-  width: 60%;
+  flex-grow: 1;
   padding: 10px;
   font-size: 1.6rem;
   border-radius: 200px;
@@ -48,37 +48,47 @@ export const MessageContainer = styled.div`
   width: 100%;
   margin-block: 10px;
 
-  & .start_message{
-    font-size:1.4rem;
-    background-color:lightgreen;
-    padding:10px;
-    border-radius:20px;
-    position:absolute;
-    bottom:20%;
-    left:50%;
+  & .start_message {
+    font-size: 1.4rem;
+    background-color: lightgreen;
+    padding: 10px;
+    border-radius: 20px;
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
   }
 `;
 
 export const InnerMessageContainer = styled.div`
-    font-size:1.4rem;
-    & .other-message{
-        float: left;
-        background-color:var(--grey-1);
-        padding:10px;
-        border-radius:20px;
-        margin-left:40px;
-        max-width:300px;
-        margin-bottom:20px;
-    }
-    & .user-message{
-        float: right;
-        background-color:var(--blue-1);
-        padding:10px;
-        border-radius:20px;
-        margin-right:40px;
-        color:var(--white);
-        max-width:300px;
-        margin-bottom:20px;
-    }
+  font-size: 1.4rem;
+  & .everything-holder {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 
+    & > img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-inline: 20px;
+    }
+  }
+
+  & .other-message {
+    float: left;
+    background-color: var(--grey-1);
+    padding: 10px;
+    border-radius: 20px;
+    max-width: 300px;
+  }
+  & .user-message {
+    float: right;
+    background-color: var(--blue-1);
+    padding: 10px;
+    border-radius: 20px;
+    margin-right: 40px;
+    color: var(--white);
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
 `;

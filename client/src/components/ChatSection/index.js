@@ -2,7 +2,6 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  FileUploadIcon,
   InnerContainer,
   InnerMessageContainer,
   Inputbar,
@@ -11,7 +10,9 @@ import {
 } from "./ChatSectionElements";
 import backgroundImage from "./jt4AoG.webp";
 import { useParams } from "react-router-dom";
-import {FaLock} from 'react-icons/fa'
+import { FaLock } from "react-icons/fa";
+import { AddCircle, InsertPhoto,Gif, Layers, ThumbUp } from "@material-ui/icons";
+import { IconButton } from "@material-ui/core";
 
 const ChatSection = ({ showTextArea }) => {
   const [allMessages, setAllMessages] = useState(null);
@@ -48,6 +49,7 @@ const ChatSection = ({ showTextArea }) => {
             setAllMessages(response.data);
           }
         } else if (response.status === 200) {
+          setAllMessages(null);
           setStarterMessage(response.data);
         }
       });
@@ -66,24 +68,45 @@ const ChatSection = ({ showTextArea }) => {
                 {perMessage.user_id !== id && (
                   <div className="user-message">{perMessage.messageBody}</div>
                 )}
-                {perMessage.user_id === id && (
-                  <div className="other-message">{perMessage.messageBody}</div>
+                {perMessage.user_id === id && (<div className="everything-holder"><img src={`http://localhost:5000/${perMessage.image}`} alt="image"/>
+                  <div className="other-message">{perMessage.messageBody}</div></div>
+                  
                 )}
               </InnerMessageContainer>
             ))}
-            {starterMessage!==null &&(
-              <div className="start_message"><span style={{marginRight:"5px"}}><FaLock style={{width:"12px",height:"auto",}}/></span>{starterMessage}! No message available.</div>
+            {starterMessage !== null && (
+              <div className="start_message">
+                <span style={{ marginRight: "5px" }}>
+                  <FaLock style={{ width: "12px", height: "auto" }} />
+                </span>
+                {starterMessage}! No message available.
+              </div>
             )}
           </MessageContainer>
           <InputSection>
-            <FileUploadIcon></FileUploadIcon>
+            <IconButton>
+              <AddCircle color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <InsertPhoto color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <Layers color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <Gif color="primary" fontSize="large" />
+            </IconButton>
             <Inputbar
               type="text"
               placeholder="Aa"
               onChange={handleMessageBodyChange}
               onKeyDown={handleKeyPress}
             />
+            <IconButton>
+              <ThumbUp color="primary" fontSize="medium" />
+            </IconButton>
           </InputSection>
+          
         </InnerContainer>
       )}
     </Container>

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
+import {MdGroupAdd} from 'react-icons/md'
 import {
   IconButton,
   Menu,
@@ -8,6 +9,7 @@ import {
   ListItemIcon,
   makeStyles,
   TextField,
+  ListItem,
 } from "@material-ui/core";
 import {
   AccountCircleRounded as AccountCircle,
@@ -18,20 +20,23 @@ import {
 } from "@material-ui/icons";
 
 import {
+  BottomSection,
   Container,
   ProfileImage,
   ProfileTab,
   SearchHeaderTag,
   SearchResults,
   SearchTab,
+  SuggestedUser,
   Topbar,
 } from "./SidebarElements";
 import Axios from "axios";
 
 const Sidebar = () => {
-
   const navigate = useNavigate();
-
+  const image = localStorage.getItem("userPic");
+  const user_id = localStorage.getItem("userID");
+  const [suggestedUser, setSuggestedUser] = useState(null);
   const [searchUser, setSearchUser] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
   const [showBackIcon, setShowBackIcon] = useState(false);
@@ -49,10 +54,9 @@ const Sidebar = () => {
           setSearchResults(response.data);
         }
       });
-      e.target.value= '';
+      e.target.value = "";
     }
   };
-
 
   const useStyles = makeStyles({
     menu: {
@@ -77,14 +81,24 @@ const Sidebar = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    Axios.get(`http://localhost:5000/suggestedUser/${user_id}`).then(
+      (response) => {
+        setSuggestedUser(response.data);
+      }
+    );
+  }, [user_id]);
+
   return (
     <Container>
       <Topbar>
         <ProfileTab>
-          <ProfileImage>
-            <AccountCircle fontSize="large" />
-          </ProfileImage>
+          <ProfileImage src={image} alt="img"/>
           <h1>Chats</h1>
+          <IconButton>
+            <MdGroupAdd />
+          </IconButton>
           <IconButton aria-controls="menu" onClick={handleOpenMenu}>
             <BsThreeDots />
           </IconButton>
@@ -123,13 +137,26 @@ const Sidebar = () => {
               </SearchHeaderTag>
             )}
             {searchResults?.map((searchResult, i) => (
-              <div key={i} onClick={()=>{
-                navigate(`/t/${searchResult.user_id}`)
-              }}>{searchResult.username}</div>
+              <div
+                key={i}
+                onClick={() => {
+                  navigate(`/t/${searchResult.user_id}`);
+                }}
+              >
+                {searchResult.username}
+              </div>
             ))}
           </SearchResults>
         </SearchTab>
       </Topbar>
+      <BottomSection>
+        <SuggestedUser>
+          <h1>Suggested Users</h1>
+          {suggestedUser?.map((user,i)=>(
+            <div key={i} className="suggested_name_holder"><img src={`http://localhost:5000/${user.image}`}alt="Profile Pic"/>{user.username}</div>
+          ))}
+        </SuggestedUser>
+      </BottomSection>
       <Menu
         className={classes.menu}
         anchorEl={anchorEl}

@@ -67,9 +67,45 @@ export const SearchHeaderTag = styled.h1`
     text-align:center;
 `
 
-export const ProfileImage = styled.div`
+export const ProfileImage = styled.img`
     width:40px;
     height:40px;
     border-radius:50%;
     margin-right:15px;
+`
+export const BottomSection = styled.div`
+    border-top:2px solid var(--highlight);
+    width:100%;
+    display:flex;
+    flex-direction:column;
+`
+
+export const SuggestedUser = styled.div`
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+
+    & .suggested_name_holder{
+        width:100%;
+        padding:10px;
+        display:flex;
+        align-items:center;
+        /* justify-content:center; */
+        font-size:1.6rem;
+        cursor: pointer;
+        &>img{
+            height:50px;
+            width:50px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            border-radius:50%;
+            margin-right:20px;
+
+        }
+        &:hover{
+            background-color:var(--highlight);
+        }
+    }
 `

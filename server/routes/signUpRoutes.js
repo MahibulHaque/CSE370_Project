@@ -1,4 +1,20 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "../server");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `ProfilePic/${file.originalname}-${Date.now()}.${ext}`);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+});
+
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -32,19 +48,22 @@ router
   .get((req, res) => {
     res.send("Hello this is the register route");
   })
-  .post((req, res) => {
+  .post(upload.single("image"),(req, res) => {
+    if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+      res.send({ msg:'Only image files (jpg, jpeg, png) are allowed!'})};
+    const image = req.file.filename;
     const username = req.body.username;
     let user_password = req.body.password;
-    const user_email = req.body.email;
+    const user_email = req.body.user_email;
     const user_id = crypto.randomBytes(16).toString("hex");
-    console.log(req.body.username);
+    
     bcrypt.hash(user_password, saltRounds, (err, hash) => {
       if (err) {
         console.log(err);
       }
       db.query(
-        "INSERT INTO user (username,password,user_email,user_id) VALUES (?,?,?,?)",
-        [username, hash, user_email, user_id],
+        "INSERT INTO user (username,password,user_email,user_id,image) VALUES (?,?,?,?,?)",
+        [username, hash, user_email, user_id,image],
         (err, result) => {
           if (err) {
             console.log(err);
@@ -80,7 +99,7 @@ const verifyJWT = (req, res, next) => {
 router.route("/isUserAuth").get(verifyJWT, (req, res) => {
   res.send("You are authenticated");
 });
-
+router.use('/', express.static(path.join(__dirname, '/')))
 router
   .route("/login")
   .get((req, res) => {
@@ -134,13 +153,14 @@ router.route("/searchUser").post((req, res) => {
     nameUser,
     (err, result) => {
       if (err) {
-        res.status(400).send(err);
+        res.status(404).send(err);
       } else {
         if (result.length > 0) {
           res.status(200).send(result);
-        }
-        else{
-          res.status(200).json({message:`No user/group found with the name ${nameUser}`});
+        } else {
+          res
+            .status(200)
+            .json({ message: `No user/group found with the name ${nameUser}` });
         }
       }
     }

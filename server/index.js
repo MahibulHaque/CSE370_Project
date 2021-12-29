@@ -8,6 +8,7 @@ const session = require("express-session");
 const app = express();
 const signUpRoutes = require("./routes/signUpRoutes");
 const directMessagesRoutes = require("./routes/directMessagesRoutes");
+const getDataRoutes = require("./routes/getDataRoutes");
 
 require("dotenv").config();
 
@@ -25,9 +26,14 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(signUpRoutes);
 app.use(directMessagesRoutes);
+app.use(getDataRoutes);
 app.get("/", (req, res) => {
   res.send(`Hello`);
 });
+app.get("/ProfilePic/:path",((req,res)=>{
+
+  res.download('./ProfilePic/'+req.params.path)
+}))
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

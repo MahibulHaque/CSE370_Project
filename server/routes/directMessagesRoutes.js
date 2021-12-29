@@ -38,11 +38,11 @@ router.route("/getMessages").post((req, res) => {
   const main_user_id = req.body.incoming_id;
   const other_user_id = req.body.outgoing_id;
   db.query(
-    "SELECT * FROM chatmessages LEFT JOIN user ON user.user_id=chatmessages.incoming_msg_id WHERE (incoming_msg_id=? AND outgoing_msg_id=?) OR (outgoing_msg_id=? AND incoming_msg_id=?) ORDER BY chatMsg_id ASC;",
+    "SELECT * FROM chatmessages LEFT JOIN user ON user.user_id=chatmessages.incoming_msg_id WHERE (incoming_msg_id=? AND outgoing_msg_id=?) OR(outgoing_msg_id=? AND incoming_msg_id=?) ORDER BY chatMsg_id ASC;",
     [main_user_id, other_user_id,main_user_id,other_user_id],
     (err, result) => {
       if (err) {
-        res.status(400).send(err);
+        res.status(404).send(err);
       } else {
         if (result.length > 0) {
           res.status(201).send(result);
