@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
-import {MdGroupAdd} from 'react-icons/md'
+import { MdGroupAdd } from "react-icons/md";
 import {
   IconButton,
   Menu,
@@ -9,7 +9,6 @@ import {
   ListItemIcon,
   makeStyles,
   TextField,
-  ListItem,
 } from "@material-ui/core";
 import {
   AccountCircleRounded as AccountCircle,
@@ -31,6 +30,10 @@ import {
   Topbar,
 } from "./SidebarElements";
 import Axios from "axios";
+import DialogComponent from "../DialogComponent";
+import GroupCreateForm from "../GroupCreateForm";
+import DialogComponentUpdate from "../DialogComponentUpdate";
+import UpdateForm from "../UpdateForm";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -40,6 +43,9 @@ const Sidebar = () => {
   const [searchUser, setSearchUser] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
   const [showBackIcon, setShowBackIcon] = useState(false);
+  const [openUsernamePopup,setOpenUsernamePopup] = useState(false);
+
+  const [openPopup, setOpenPopup] = useState(false);
 
   const handleFocus = () => {
     setShowBackIcon(true);
@@ -94,9 +100,13 @@ const Sidebar = () => {
     <Container>
       <Topbar>
         <ProfileTab>
-          <ProfileImage src={image} alt="img"/>
+          <ProfileImage src={image} alt="img" />
           <h1>Chats</h1>
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              setOpenPopup(true);
+            }}
+          >
             <MdGroupAdd />
           </IconButton>
           <IconButton aria-controls="menu" onClick={handleOpenMenu}>
@@ -148,12 +158,24 @@ const Sidebar = () => {
             ))}
           </SearchResults>
         </SearchTab>
+        <DialogComponent openPopup={openPopup} setOpenPopup={setOpenPopup} title="Create a new Group">
+          <GroupCreateForm />
+        </DialogComponent>
+        <DialogComponentUpdate openUsernamePopup={openUsernamePopup} setOpenUsernamePopup={setOpenUsernamePopup} title="Update Username">
+          <UpdateForm />
+        </DialogComponentUpdate>
       </Topbar>
       <BottomSection>
         <SuggestedUser>
           <h1>Suggested Users</h1>
-          {suggestedUser?.map((user,i)=>(
-            <div key={i} className="suggested_name_holder"><img src={`http://localhost:5000/${user.image}`}alt="Profile Pic"/>{user.username}</div>
+          {suggestedUser?.map((user, i) => (
+            <div key={i} className="suggested_name_holder" onClick={()=>{navigate(`/t/${user.user_id}`)}}>
+              <img
+                src={`http://localhost:5000/${user.image}`}
+                alt="Profile Pic"
+              />
+              <span>{user.username}</span>
+            </div>
           ))}
         </SuggestedUser>
       </BottomSection>
@@ -170,11 +192,11 @@ const Sidebar = () => {
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={()=>{setOpenUsernamePopup(true)}}>
           <ListItemIcon>
             <AccountCircle fontSize="small" />
           </ListItemIcon>
-          My account
+          Update name
         </MenuItem>
         <MenuItem>
           <ListItemIcon>

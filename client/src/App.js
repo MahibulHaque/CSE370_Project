@@ -1,6 +1,6 @@
 import "./App.css";
 import { createTheme, ThemeProvider } from "@material-ui/core";
-import { blue, green } from "@material-ui/core/colors";
+import { blue, red } from "@material-ui/core/colors";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 
@@ -10,7 +10,8 @@ import Chat from "./Screens/Chat";
 const theme = createTheme({
   palette: {
     primary: blue,
-    secondary: green,
+    secondary: red,
+
   },
   typography: {
     fontFamily: "Helvetica",

@@ -68,7 +68,7 @@ const ChatSection = ({ showTextArea }) => {
                 {perMessage.user_id !== id && (
                   <div className="user-message">{perMessage.messageBody}</div>
                 )}
-                {perMessage.user_id === id && (<div className="everything-holder"><img src={`http://localhost:5000/${perMessage.image}`} alt="image"/>
+                {perMessage.user_id === id && (<div className="everything-holder"><img src={`http://localhost:5000/${perMessage.image}`} alt="Profile"/>
                   <div className="other-message">{perMessage.messageBody}</div></div>
                   
                 )}

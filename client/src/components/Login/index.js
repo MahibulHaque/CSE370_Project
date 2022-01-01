@@ -94,6 +94,10 @@ const Login = () => {
       }).then((response) => {
         console.log(response);
       });
+      formData.delete("username");
+      formData.delete("user_email");
+      formData.delete("password");
+      formData.delete("image");  
     }
   };
 
@@ -245,7 +249,7 @@ const Login = () => {
         <ImageContainer>
           <img
             className="hero__image"
-            src="https://scontent.fdac116-1.fna.fbcdn.net/v/t39.8562-6/120973513_338186077283942_8148888802958728934_n.png?_nc_cat=1&ccb=1-5&_nc_sid=6825c5&_nc_ohc=z5-grmXufzEAX8cuI3r&_nc_ht=scontent.fdac116-1.fna&oh=00_AT_sORfB2EJg6zEV505TRtbWqxlQ3R-b4Xbp8PII29POmw&oe=61BF66E7"
+            src="https://scontent.fdac116-1.fna.fbcdn.net/v/t39.8562-6/120973513_338186077283942_8148888802958728934_n.png?_nc_cat=1&ccb=1-5&_nc_sid=6825c5&_nc_ohc=IaekLEmuM-0AX-TsOWl&_nc_ht=scontent.fdac116-1.fna&oh=00_AT_zgUEwIcz-4XtJfycG8Z9IV0SkMOGZwtm9YEuGuukGdA&oe=61D32D67"
             alt="hero"
           />
         </ImageContainer>
