@@ -31,7 +31,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />}></Route>
             <Route path="/home/:id"  element={<Chat showTextArea={false}/>} />
-            <Route path="/t/:id"  element={<Chat showTextArea={true}/>} />
+            <Route path="/t/:id"  element={<Chat showTextArea={true} groupSection={false}/>} />
+            <Route path="/g/:id"  element={<Chat showTextArea={true} groupSection={true}/>} />
           </Routes>
         </ThemeProvider>
       </Router>

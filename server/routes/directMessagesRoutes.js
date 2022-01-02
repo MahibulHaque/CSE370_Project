@@ -42,7 +42,7 @@ router.route("/getMessages").post((req, res) => {
     [main_user_id, other_user_id,main_user_id,other_user_id],
     (err, result) => {
       if (err) {
-        res.status(404).send(err);
+        res.status(400).send(err);
       } else {
         if (result.length > 0) {
           res.status(201).send(result);
