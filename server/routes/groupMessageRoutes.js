@@ -29,24 +29,25 @@ const db = mysql.createConnection({
   database: process.env.DB_DATABASE,
 });
 
-router.route("/getGroupInfo/:id").get((req,res)=>{
+router.route("/getGroupInfo/:id").get((req, res) => {
   const group_id = req.params.id;
   db.query(
-    "SELECT group_name,group_id,group_image FROM group_detail WHERE group_id=?",group_id,(err,result)=>{
-      if(err){
-        res.status(400).json({msg:"Unable retrive group information"})
-      }
-      else{
-        if(result.length>0){
+    "SELECT group_name,group_id,group_image FROM group_detail WHERE group_id=?",
+    group_id,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ msg: "Unable retrive group information" });
+      } else {
+        if (result.length > 0) {
           res.status(200).send(result);
         }
       }
     }
-  )
-})
+  );
+});
 
 router.route("/createGroup").post(upload.single("image"), (req, res) => {
-  if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+  if (!req.file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|JFIF)$/)) {
     res.send({ msg: "Only image files (jpg, jpeg, png) are allowed!" });
   }
   const image = req.file.filename;
@@ -67,8 +68,8 @@ router.route("/createGroup").post(upload.single("image"), (req, res) => {
       } else {
         if (result) {
           db.query(
-            "SELECT group_id FROM group_detail WHERE created_by=? LIMIT 1;",
-            creatorID,
+            "SELECT group_id FROM group_detail WHERE created_by=? AND group_name=? LIMIT 1;",
+            [creatorID,group_name],
             (err, result) => {
               if (err) {
                 console.log(err);
@@ -103,25 +104,40 @@ router.route("/createGroup").post(upload.single("image"), (req, res) => {
   );
 });
 
-router.route("/groupUser/:id").post((req,res)=>{
-  const user_id = req.body.userID;
-  const grp_id = req.params.id;
+router.route("/suggestedGroup").get((req, res) => {
   db.query(
-    "SELECT * FROM group_users WHERE group_id=? AND group_userID=?",[grp_id,user_id],(err,result)=>{
-      if(err){
-        res.status(400).json({msg:"Unable to find group"});
-      }
-      else{
-        if(result.length>0){
-          res.status(200).send({Ingrp:true});
-        }
-        else{
-          res.status(200).send({Ingrp:false});
+    "SELECT group_id,group_name,group_image FROM group_detail GROUP BY group_id LIMIT 5;",
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ msg: "Unable to retrieve groups" });
+      } else {
+        if (result) {
+          res.status(200).send(result);
         }
       }
     }
-  )
-})
+  );
+});
+
+router.route("/groupUser/:id").post((req, res) => {
+  const user_id = req.body.userID;
+  const grp_id = req.params.id;
+  db.query(
+    "SELECT * FROM group_users WHERE group_id=? AND group_userID=?",
+    [grp_id, user_id],
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ msg: "Unable to find group" });
+      } else {
+        if (result.length > 0) {
+          res.status(200).send({ Ingrp: true });
+        } else {
+          res.status(200).send({ Ingrp: false });
+        }
+      }
+    }
+  );
+});
 
 router.route("/joinGroup").post((req, res) => {
   const group_id = req.body.group_id;
@@ -163,7 +179,7 @@ router.route("/postGroupMessage").post((req, res) => {
 
   db.query(
     "INSERT INTO chatmessages (incoming_msg_id,outgoing_msg_id,messageBody,chat_msg_group_id) VALUES(?,?,?,?);",
-    [incoming_id, outgoing_id, messageBody,outgoing_id],
+    [incoming_id, outgoing_id, messageBody, outgoing_id],
     (err, result) => {
       if (err) {
         res.status(400).send(err);
@@ -178,24 +194,24 @@ router.route("/postGroupMessage").post((req, res) => {
   );
 });
 
-router.route("/getGroupMessages/:id").get((req,res)=>{
+router.route("/getGroupMessages/:id").get((req, res) => {
   const grp_id = req.params.id;
 
   db.query(
-    "SELECT * FROM chatmessages AS cm LEFT JOIN user ON user.user_id=cm.incoming_msg_id WHERE (outgoing_msg_id=?) ORDER BY chatMsg_id ASC;",grp_id,(err,result)=>{
-      if(err){
-        res.status(400).json({msg:"Message couldn't be retrived"})
-      }
-      else{
-        if(result.length>0){
+    "SELECT * FROM chatmessages AS cm LEFT JOIN user ON user.user_id=cm.incoming_msg_id WHERE (outgoing_msg_id=?) ORDER BY chatMsg_id ASC;",
+    grp_id,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ msg: "Message couldn't be retrived" });
+      } else {
+        if (result.length > 0) {
           res.status(201).send(result);
-        }
-        else{
-          res.status(200).send({msg:"This is the start of conversation"});
+        } else {
+          res.status(200).send({ msg: "This is the start of conversation" });
         }
       }
     }
-  )
-})
+  );
+});
 
 module.exports = router;

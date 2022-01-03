@@ -36,7 +36,7 @@ router.route("/suggestedUser/:id").get((req, res) => {
   const user_id = req.params.id;
 
   db.query(
-    "SELECT username,user_id,image FROM user WHERE user_id!=? LIMIT 10;",
+    "SELECT username,user_id,image FROM user WHERE user_id!=? LIMIT 5;",
     user_id,
     (err, result)=>{
         if(err){

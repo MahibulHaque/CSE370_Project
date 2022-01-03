@@ -21,7 +21,7 @@ export const ProfileTab = styled.div`
     display:flex;
     align-items:center;
     width:90%;
-    margin-block:3rem;
+    margin-block:1.5rem;
     &>h1{
         display:flex;
         flex-grow:1;

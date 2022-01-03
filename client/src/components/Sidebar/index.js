@@ -43,7 +43,8 @@ const Sidebar = () => {
   const [searchUser, setSearchUser] = useState(null);
   const [searchResults, setSearchResults] = useState(null);
   const [showBackIcon, setShowBackIcon] = useState(false);
-  const [openUsernamePopup,setOpenUsernamePopup] = useState(false);
+  const [openUsernamePopup, setOpenUsernamePopup] = useState(false);
+  const [suggestedGroups,setSuggestedGroups] = useState(null);
 
   const [openPopup, setOpenPopup] = useState(false);
 
@@ -95,6 +96,12 @@ const Sidebar = () => {
       }
     );
   }, [user_id]);
+
+  useEffect(() => {
+    Axios.get("http://localhost:5000/suggestedGroup").then((response) => {
+      setSuggestedGroups(response.data);
+    });
+  }, []);
 
   return (
     <Container>
@@ -158,10 +165,18 @@ const Sidebar = () => {
             ))}
           </SearchResults>
         </SearchTab>
-        <DialogComponent openPopup={openPopup} setOpenPopup={setOpenPopup} title="Create a new Group">
+        <DialogComponent
+          openPopup={openPopup}
+          setOpenPopup={setOpenPopup}
+          title="Create a new Group"
+        >
           <GroupCreateForm />
         </DialogComponent>
-        <DialogComponentUpdate openUsernamePopup={openUsernamePopup} setOpenUsernamePopup={setOpenUsernamePopup} title="Update Username">
+        <DialogComponentUpdate
+          openUsernamePopup={openUsernamePopup}
+          setOpenUsernamePopup={setOpenUsernamePopup}
+          title="Update Username"
+        >
           <UpdateForm />
         </DialogComponentUpdate>
       </Topbar>
@@ -169,12 +184,36 @@ const Sidebar = () => {
         <SuggestedUser>
           <h1>Suggested Users</h1>
           {suggestedUser?.map((user, i) => (
-            <div key={i} className="suggested_name_holder" onClick={()=>{navigate(`/t/${user.user_id}`)}}>
+            <div
+              key={i}
+              className="suggested_name_holder"
+              onClick={() => {
+                navigate(`/t/${user.user_id}`);
+              }}
+            >
               <img
                 src={`http://localhost:5000/${user.image}`}
                 alt="Profile Pic"
               />
               <span>{user.username}</span>
+            </div>
+          ))}
+        </SuggestedUser>
+        <SuggestedUser>
+          <h1>Suggested Groups</h1>
+          {suggestedGroups?.map((group, i) => (
+            <div
+              key={i}
+              className="suggested_name_holder"
+              onClick={() => {
+                navigate(`/g/${group.group_id}`);
+              }}
+            >
+              <img
+                src={`http://localhost:5000/${group.group_image}`}
+                alt="Profile Pic"
+              />
+              <span>{group.group_name}</span>
             </div>
           ))}
         </SuggestedUser>
@@ -192,7 +231,11 @@ const Sidebar = () => {
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem onClick={()=>{setOpenUsernamePopup(true)}}>
+        <MenuItem
+          onClick={() => {
+            setOpenUsernamePopup(true);
+          }}
+        >
           <ListItemIcon>
             <AccountCircle fontSize="small" />
           </ListItemIcon>

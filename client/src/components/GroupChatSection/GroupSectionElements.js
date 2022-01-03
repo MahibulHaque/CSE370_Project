@@ -10,19 +10,21 @@ export const Container = styled.div`
 export const Topbar = styled.div`
     display:flex;
     width:100%;
-    justify-content:space-evenly;
     align-items:center;
     height:60px;
-    background-color:var(--highlight);
+    background-color:var(--white);
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
 
     &>img{
         height:40px;
         width:40px;
         border-radius:50%;
+        margin-inline:30px;
     }
 
     &>h1{
-        font-size:1.4rem;
+        font-size:1.8rem;
+        flex-grow:1;
     }
 `
 export const InnerContainer = styled.div`
@@ -86,8 +88,8 @@ export const InnerMessageContainer = styled.div`
     margin-bottom: 20px;
 
     & > img {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       margin-inline: 20px;
     }

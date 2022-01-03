@@ -82,7 +82,7 @@ const GroupChatSection = ({ showTextArea }) => {
             }
           } else if (response.status === 200) {
             setAllMessages(null);
-            setStarterMessage(response.data);
+            setStarterMessage(response.data.msg);
           }
         }
       );
