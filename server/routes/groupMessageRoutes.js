@@ -56,7 +56,6 @@ router.route("/createGroup").post(upload.single("image"), (req, res) => {
   const creatorID = req.body.creatorID;
   const creatorName = req.body.creatorName;
   const group_id = crypto.randomBytes(16).toString("hex");
-  console.log(group_name, group_password, creatorID);
 
   db.query(
     "INSERT INTO group_detail (group_id,group_name,password,created_by,group_image) VALUES(?,?,?,?,?);",

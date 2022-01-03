@@ -18,6 +18,9 @@ import {
   Gif,
   Layers,
   ThumbUp,
+  Call,
+  Videocam,
+  MoreHoriz,
 } from "@material-ui/icons";
 import { Button, IconButton } from "@material-ui/core";
 import DialogComponentPassword from "../DialogComponentPassword";
@@ -94,11 +97,14 @@ const GroupChatSection = ({ showTextArea }) => {
   return (
     <Container style={{ backgroundImage: `url(${backgroundImage})` }}>
       <Topbar>
-        <img
-          src={`http://localhost:5000/${groupInfo?.group_image}`}
-          alt="Group_image"
-        />
-        <h1>{groupInfo?.group_name}</h1>
+        <div>
+          <img
+            src={`http://localhost:5000/${groupInfo?.group_image}`}
+            alt="Group_image"
+          />
+          <h1>{groupInfo?.group_name}</h1>
+        </div>
+
         {!inGroup && (
           <Button
             variant="contained"
@@ -110,6 +116,19 @@ const GroupChatSection = ({ showTextArea }) => {
             Join
           </Button>
         )}
+        {inGroup && (
+          <div>
+            <IconButton>
+              <Call color="primary" fontSize="medium"/>
+            </IconButton>
+            <IconButton>
+              <Videocam color="primary" fontSize="medium"/>
+            </IconButton>
+            <IconButton>
+              <MoreHoriz color="primary" fontSize="medium"/>
+            </IconButton>
+          </div>
+        )}
       </Topbar>
       <DialogComponentPassword
         title="Join group"
@@ -118,62 +137,63 @@ const GroupChatSection = ({ showTextArea }) => {
       >
         <PasswordForm />
       </DialogComponentPassword>
-      {(inGroup &&
-        showTextArea) && (
-          <InnerContainer>
-            <MessageContainer>
-              {allMessages?.map((perMessage, i) => (
-                <InnerMessageContainer key={i}>
-                  {perMessage.incoming_msg_id === localStorage.getItem("userID") && (
-                    <div className="user-message">{perMessage.messageBody}</div>
-                  )}
-                  {perMessage.incoming_msg_id !== localStorage.getItem("userID") && (
-                    <div className="everything-holder">
-                      <img
-                        src={`http://localhost:5000/${perMessage.image}`}
-                        alt="Profile"
-                      />
-                      <div className="other-message">
-                        {perMessage.messageBody}
-                      </div>
+      {inGroup && showTextArea && (
+        <InnerContainer>
+          <MessageContainer>
+            {allMessages?.map((perMessage, i) => (
+              <InnerMessageContainer key={i}>
+                {perMessage.incoming_msg_id ===
+                  localStorage.getItem("userID") && (
+                  <div className="user-message">{perMessage.messageBody}</div>
+                )}
+                {perMessage.incoming_msg_id !==
+                  localStorage.getItem("userID") && (
+                  <div className="everything-holder">
+                    <img
+                      src={`http://localhost:5000/${perMessage.image}`}
+                      alt="Profile"
+                    />
+                    <div className="other-message">
+                      {perMessage.messageBody}
                     </div>
-                  )}
-                </InnerMessageContainer>
-              ))}
-              {starterMessage !== null && (
-                <div className="start_message">
-                  <span style={{ marginRight: "5px" }}>
-                    <FaLock style={{ width: "12px", height: "auto" }} />
-                  </span>
-                  {starterMessage}! No message available.
-                </div>
-              )}
-            </MessageContainer>
-            <InputSection>
-              <IconButton>
-                <AddCircle color="primary" fontSize="medium" />
-              </IconButton>
-              <IconButton>
-                <InsertPhoto color="primary" fontSize="medium" />
-              </IconButton>
-              <IconButton>
-                <Layers color="primary" fontSize="medium" />
-              </IconButton>
-              <IconButton>
-                <Gif color="primary" fontSize="large" />
-              </IconButton>
-              <Inputbar
-                type="text"
-                placeholder="Aa"
-                onChange={handleMessageBodyChange}
-                onKeyDown={handleKeyPress}
-              />
-              <IconButton>
-                <ThumbUp color="primary" fontSize="medium" />
-              </IconButton>
-            </InputSection>
-          </InnerContainer>
-        )}
+                  </div>
+                )}
+              </InnerMessageContainer>
+            ))}
+            {starterMessage !== null && (
+              <div className="start_message">
+                <span style={{ marginRight: "5px" }}>
+                  <FaLock style={{ width: "12px", height: "auto" }} />
+                </span>
+                {starterMessage}! No message available.
+              </div>
+            )}
+          </MessageContainer>
+          <InputSection>
+            <IconButton>
+              <AddCircle color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <InsertPhoto color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <Layers color="primary" fontSize="medium" />
+            </IconButton>
+            <IconButton>
+              <Gif color="primary" fontSize="large" />
+            </IconButton>
+            <Inputbar
+              type="text"
+              placeholder="Aa"
+              onChange={handleMessageBodyChange}
+              onKeyDown={handleKeyPress}
+            />
+            <IconButton>
+              <ThumbUp color="primary" fontSize="medium" />
+            </IconButton>
+          </InputSection>
+        </InnerContainer>
+      )}
     </Container>
   );
 };

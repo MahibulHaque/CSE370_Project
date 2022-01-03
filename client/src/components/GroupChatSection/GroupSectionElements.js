@@ -5,35 +5,40 @@ export const Container = styled.div`
   flex-grow: 1;
   background-repeat: repeat;
   background-size: contain;
-  flex-direction:column;
+  flex-direction: column;
 `;
 export const Topbar = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content:space-between;
+  height: 60px;
+  background-color: var(--white);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  & > div {
     display:flex;
-    width:100%;
     align-items:center;
-    height:60px;
-    background-color:var(--white);
-    box-shadow: 0 0 4px rgba(0,0,0,0.2);
-
-    &>img{
-        height:40px;
-        width:40px;
-        border-radius:50%;
-        margin-inline:30px;
+    margin-inline:30px;
+    & > img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      margin-right: 30px;
     }
 
-    &>h1{
-        font-size:1.8rem;
-        flex-grow:1;
+    & > h1 {
+      font-size: 1.8rem;
+      flex-grow: 1;
     }
-`
+  }
+`;
 export const InnerContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  flex-grow:1;
+  flex-grow: 1;
 `;
 export const InputSection = styled.div`
   width: 100%;
